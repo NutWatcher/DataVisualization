@@ -1,5 +1,5 @@
 node_modules
 .idea
-./site
+/site/*
 npm-debug.log
 package-lock.json

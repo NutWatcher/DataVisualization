@@ -2,7 +2,7 @@
 DataVisualization
 
 
-##安装依赖插件
+## 安装依赖插件
 
 请先保证安装了Node8.0+ 、 Npm3.0+
 
@@ -10,13 +10,13 @@ DataVisualization
 
 ```npm install```
 
-##使用方法
+## 使用方法
 
-###介绍
+### 介绍
 
 项目使用了React的框架，使用webpack进行打包
 
-###开发模式
+### 开发模式
 
 命令
 ```npm debug```
@@ -25,7 +25,7 @@ DataVisualization
 
 
 
-###打包模式
+### 打包模式
 命令
 ```npm run bulid```
 

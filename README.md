@@ -19,7 +19,7 @@ DataVisualization
 ### 开发模式
 
 命令
-```npm debug```
+```npm run debug```
 
 浏览器打开 `http://localhost:8080`
 

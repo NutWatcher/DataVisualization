@@ -7,7 +7,7 @@ export default class Map extends React.Component<{ dataGeo: any }, {}> {
     componentDidMount(){
         let projection = d3.geoMercator()
             .center([107, 31])
-            .scale(850)
+            .scale(Config.scale)
             .translate([Config.width/2, Config.height/2]);
         let path = d3.geoPath ()
             .projection(projection);

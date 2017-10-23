@@ -23,3 +23,22 @@
 .nodeCity:hover{
     cursor: pointer;
 }
+.axis line , .axis path{
+    fill: none;
+    stroke-width: 1px;
+    stroke: #e7e7e7;
+}
+.scatterPlot .label{
+    font-size: 15px;
+    fill: rgba(0, 0, 0, 0.99);
+}
+
+.scatterPlot .bubble text {
+    opacity: 0;
+    pointer-events: none;
+    font-size: 15px;
+}
+
+.scatterPlot .bubble:hover text {
+    opacity: 1;
+}

@@ -22,7 +22,7 @@ class Node extends React.Component<{ changeCity:any, city: mapCityTypes.city , f
         let color = this.props.fillColor;
         let projection = d3.geoMercator()
             .center([107, 31])
-            .scale(850)
+            .scale(Config.scale)
             .translate([Config.width/2, Config.height/2]);
         d3
             .select(this.ref)

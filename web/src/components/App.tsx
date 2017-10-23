@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as d3 from 'd3';
-import { d3Types,  mapCityTypes } from "../types";
 import Map from "./map";
 import Config from "../data/config";
 import Cities from "./cities";
@@ -51,7 +50,7 @@ export default class App extends React.Component<Props, State> {
         if (this.state.showCity == false) {
             let projection = d3.geoMercator()
                 .center([107, 31])
-                .scale(850)
+                .scale(Config.scale)
                 .translate([Config.width/2, Config.height/2]);
             //关系链上插入坐标
             for (let i = 0 ; i < cityRelationList.length ; i ++){
@@ -100,7 +99,7 @@ export default class App extends React.Component<Props, State> {
         else {
             return (
                 <div>
-                    <AppCity info={this.state.showCityInfo} showMap={this.showMap} />
+                    <AppCity width={960} height={500} info={this.state.showCityInfo} showMap={this.showMap} />
                 </div>
             )
         }

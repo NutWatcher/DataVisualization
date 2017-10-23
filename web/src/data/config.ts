@@ -4,5 +4,6 @@
 
 export default{
     width:1400,
-    height:1000
+    height:800,
+    scale:600
 }

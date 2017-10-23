@@ -1,13 +1,14 @@
 import * as React from "react";
 import * as d3 from "d3";
 import { d3Types } from "../types";
+import Config from "../data/config";
 export default class Map extends React.Component<{ dataGeo: any }, {}> {
     ref: SVGGElement;
     componentDidMount(){
         let projection = d3.geoMercator()
             .center([107, 31])
             .scale(850)
-            .translate([1400/2, 1000/2]);
+            .translate([Config.width/2, Config.height/2]);
         let path = d3.geoPath ()
             .projection(projection);
         let color = d3.scaleOrdinal(d3.schemeCategory10);

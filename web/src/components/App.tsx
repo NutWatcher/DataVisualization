@@ -1,89 +1,108 @@
 import * as React from 'react';
 import * as d3 from 'd3';
-import { d3Types, mapChinaTypes, mapCityTypes } from "../types";
-import Links from "./links";
-import Nodes from "./nodes";
-import Labels from "./labels";
+import { d3Types,  mapCityTypes } from "../types";
 import Map from "./map";
+import Config from "../data/config";
 import Cities from "./cities";
+import LineRelations from "./lineRelation";
+import AppCity from "./AppCity";
 import '../styles/App.css';
 
 interface Props {
     width: number;
     height: number;
-    graph: d3Types.d3Graph;
     dataGeoChina:any;
     cityList:any;
+    cityRelationList:any;
 }
-
-export default class App extends React.Component<Props, {}> {
+interface State {
+    showCity:boolean,
+    showCityInfo:any
+}
+export default class App extends React.Component<Props, State> {
     simulation: any;
 
     constructor(props: Props) {
         super(props);
-        this.simulation = d3.forceSimulation()
-            .force("link", d3.forceLink().id(function (d: d3Types.d3Node) {
-                return d.id;
-            }))
-            .force("charge", d3.forceManyBody().strength(-100))
-            .force("center", d3.forceCenter(this.props.width / 2, this.props.height / 2))
-            .nodes(this.props.graph.nodes);
-
-        this.simulation.force("link").links(this.props.graph.links);
-    }
-
-    componentDidMount() {
-        const node = d3.selectAll(".node");
-        const link = d3.selectAll(".link");
-        const label = d3.selectAll(".label");
-        const map = d3.selectAll(".map");
-
-        //this.simulation.nodes(this.props.graph.nodes).on("tick", ticked);
-
-        function ticked() {
-            link
-                .attr("x1", function (d: any) {
-                    return d.source.x;
-                })
-                .attr("y1", function (d: any) {
-                    return d.source.y;
-                })
-                .attr("x2", function (d: any) {
-                    return d.target.x;
-                })
-                .attr("y2", function (d: any) {
-                    return d.target.y;
-                });
-
-            node
-                .attr("cx", function (d: any) {
-                    return d.x;
-                })
-                .attr("cy", function (d: any) {
-                    return d.y;
-                });
-
-            label
-                .attr("x", function (d: any) {
-                    return d.x + 5;
-                })
-                .attr("y", function (d: any) {
-                    return d.y + 5;
-                });
+        this.state = {
+            showCity:false,
+            showCityInfo:{}
         }
     }
 
+    componentDidMount() {
+    }
+    showCity = (city:any) => {
+        this.setState({
+            showCity:true,
+            showCityInfo:city
+        })
+    };
+    showMap = () => {
+        this.setState({
+            showCity:false,
+            showCityInfo:{}
+        })
+    };
     render() {
-        const { width, height, graph, dataGeoChina, cityList} = this.props;
-        return (
-            <svg className="container"
-                 width={width} height={height}>
-                <Map dataGeo={dataGeoChina}/>
-                <Cities cityList={cityList}/>
-                {/*<Links links={graph.links} />*/}
-                {/*<Nodes nodes={graph.nodes} simulation={this.simulation} />*/}
-                {/*<Labels nodes={graph.nodes} />*/}
-            </svg>
-        );
+        const { width, height, dataGeoChina, cityList, cityRelationList} = this.props;
+
+        //判断显示地图还是进入城市层级
+        if (this.state.showCity == false) {
+            let projection = d3.geoMercator()
+                .center([107, 31])
+                .scale(850)
+                .translate([Config.width/2, Config.height/2]);
+            //关系链上插入坐标
+            for (let i = 0 ; i < cityRelationList.length ; i ++){
+                cityRelationList[i].startCoordinate = {x: 0, y: 0};
+                cityRelationList[i].endCoordinate = {x: 0, y: 0};
+                for (let j = 0 ; j < cityList.length ; j ++){
+                    if (cityRelationList[i].startId == cityList[j].id){
+                        cityRelationList[i].start = cityList[j].name;
+                        let tempCoordinate = projection([cityList[j].longitude, cityList[j].latitude]);
+                        cityRelationList[i].startCoordinate = {
+                            x: tempCoordinate[0],
+                            y: tempCoordinate[1]
+                        }
+                    }
+                    else if (cityRelationList[i].endId == cityList[j].id){
+                        cityRelationList[i].end = cityList[j].name;
+                        let tempCoordinate = projection([cityList[j].longitude, cityList[j].latitude]);
+                        cityRelationList[i].endCoordinate = {
+                            x: tempCoordinate[0],
+                            y: tempCoordinate[1]
+                        }
+                    }
+                }
+            }
+            return (
+                <div>
+                    <p style={{textAlign: "center", fontSize: "25px"}}>通过地理位置聚合后的信息图</p>
+                    <div style={{position: "absolute", top: "10px", left: "10px"}}>
+                        <ul>
+                            <li>加权值</li>
+                            <li>频次</li>
+                            <li>交易额</li>
+                            <li>耦合度</li>
+                        </ul>
+                        <p>选择不同属性，呈现不同的关系效果。例如关系线宽度发生变化</p>
+                    </div>
+                    <svg className="container"
+                         width={width} height={height}>
+                        <Map dataGeo={dataGeoChina}/>
+                        <LineRelations relationList={cityRelationList}/>
+                        <Cities cityList={cityList} changeCity={this.showCity}/>
+                    </svg>
+                </div>
+            );
+        }
+        else {
+            return (
+                <div>
+                    <AppCity info={this.state.showCityInfo} showMap={this.showMap} />
+                </div>
+            )
+        }
     }
 }

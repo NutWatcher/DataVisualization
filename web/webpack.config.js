@@ -4,12 +4,16 @@ module.exports = {
     entry: "./src/index.tsx",
     output: {
         filename: "bundle.js",
+        publicPath: "http://127.0.0.1:8080/dist/",
         path: __dirname + "/dist"
     },
 
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
-
+    devServer: {
+        inline: true,
+        port: 7777
+    },
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: [".ts", ".tsx", ".js", ".json"]
